@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.memberdao">
+
+	<select id="login" parameterType="map" resultType="member">
+		select name,
+		id, email
+		from member
+		where id = #{id} and pw = #{pw}
+	</select>
+
+	<insert id="regiMember" parameterType="member">
+		insert into member(id, pw,
+		name, phoneNum, email, address, addressDetail, isAdmin)
+		values (#{id},
+		#{pw}, #{name}, #{phoneNum}, #{email}, #{address}, #{addressDetail},
+		#{isAdmin})
+	</insert>
+
+	<update id="modMember" parameterType="member">
+		update member
+		set pw =
+		#{pw}, name = #{name}, phoneNum=#{phoneNum}, email=#{email},
+		address=#{address}, addressDetail=#{addressDetail}
+		where id = #{id}
+	</update>
+
+	<delete id="deleteMember" parameterType="String">
+		delete from member
+		where
+		id = #{id}
+	</delete>
+
+	<select id="listMember" parameterType="map" resultType="member">
+		select id, name, pw, phoneNum, email
+		from member
+		<if test="word != null and word != ''">
+			<if test="key == 'name'">
+				where name like concat('%', #{word}, '%')
+			</if>
+			<if test="key != 'name'">
+				where ${key} = #{word}
+			</if>
+		</if>
+		order by id
+		limit #{start}, #{spp}
+	</select>
+
+	<select id="allMember" resultType="member">
+		select * from member
+	</select>
+
+	<select id="getTotalCount" parameterType="map" resultType="int">
+		select count(id)
+		from member
+		<if test="word != null and word != ''">
+			<if test="key == 'name'">
+				where name like concat('%', #{word}, '%')
+			</if>
+			<if test="key != 'name'">
+				where ${key} = #{word}
+			</if>
+		</if>
+	</select>
+
+</mapper>

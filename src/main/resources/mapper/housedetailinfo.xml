@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.housedealinfo">
+
+	<select id="dongName" parameterType="string" resultType="housedeal">
+		SELECT dong, houseName, jibun,dealAmount,buildYear,floor,area,type FROM housedeal WHERE dong = "${DongName}" ORDER BY houseName
+	</select>
+	
+	<select id="houseName" parameterType="string" resultType="housedeal">
+		SELECT dong, jibun,dealAmount,buildYear,floor,area,houseName,type FROM housedeal WHERE houseName LIKE ${houseName} ORDER BY houseName
+	</select>
+	
+</mapper>
