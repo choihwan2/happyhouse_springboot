@@ -15,8 +15,8 @@ public class HouseDealInfoDaoImpl {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public List<HouseDealInfoDto> getDealInfoDongName(String DongName) throws Exception {
-		return sqlSession.selectList(ns + "dongName", DongName);
+	public List<HouseDealInfoDto> getDealInfoDongName(String dongName) throws Exception {
+		return sqlSession.selectList(ns + "dongName", dongName);
 	}
 
 	public List<HouseDealInfoDto> getDealInfoHouseName(String houseName) throws Exception {

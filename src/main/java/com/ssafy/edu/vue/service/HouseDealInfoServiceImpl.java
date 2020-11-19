@@ -15,8 +15,8 @@ public class HouseDealInfoServiceImpl implements HouseDealInfoService {
 	HouseDealInfoDaoImpl dao;
 	
 	@Override
-	public List<HouseDealInfoDto> getDealInfoDongName(String DongName) throws Exception {
-		return dao.getDealInfoDongName(DongName);
+	public List<HouseDealInfoDto> getDealInfoDongName(String dongName) throws Exception {
+		return dao.getDealInfoDongName(dongName);
 	}
 
 	@Override
