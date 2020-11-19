@@ -9,7 +9,7 @@
 	</select>
 	
 	<select id="houseName" parameterType="string" resultType="housedeal">
-		SELECT dong, jibun,dealAmount,buildYear,floor,area,houseName,type FROM housedeal WHERE houseName LIKE #{houseName} ORDER BY houseName
+		SELECT dong, jibun,dealAmount,buildYear,floor,area,houseName,type FROM housedeal WHERE houseName LIKE concat('%', #{houseName}, '%') ORDER BY houseName
 	</select>
 	
 </mapper>

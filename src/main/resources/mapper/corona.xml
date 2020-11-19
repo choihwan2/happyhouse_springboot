@@ -5,7 +5,7 @@
 <mapper namespace="com.ssafy.coronadao">
 
 	<select id="getcoronaInfo" parameterType="string" resultType="coronainfo">
-		SELECT gugun, name, address, weekdayop, tel, lat, lng, type FROM hospital WHERE gugun_code like "${gugun}%"
+		SELECT gugun, name, address, weekdayop, tel, lat, lng, type FROM hospital WHERE gugun_code like concat(#{gugun}, '%')
 	</select>
 	
 </mapper>

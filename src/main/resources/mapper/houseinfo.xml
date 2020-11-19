@@ -9,7 +9,7 @@
 	</select>
 	
 	<select id="gugunList" parameterType="string" resultType="sidogun">
-		SELECT left(gugun_code,5) gugunCode, gugun_name gugunName FROM guguncode where left(gugun_code,2) = #{sido} 
+		SELECT left(gugun_code,5) gugunCode, gugun_name gugunName FROM guguncode where left(gugun_code,2) = #{sido}
 		ORDER BY gugun_name
 	</select>
 	
@@ -22,7 +22,7 @@
 	</select>
 	
 	<select id="houseNameList" parameterType="string" resultType="houseinfo">
-		SELECT no,dong,houseName,code,jibun,lat,lng FROM houseinfo WHERE houseName LIKE #{houseName} ORDER BY houseName
+		SELECT no,dong,houseName,code,jibun,lat,lng FROM houseinfo WHERE houseName LIKE concat('%', #{houseName}, '%') ORDER BY houseName
 	</select>
 				 
 	
