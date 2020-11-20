@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin(origins = { "*" }, maxAge = 6000)
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/admin")
 @Api(value = "HappyHouse", description = "HappyHouse Resouces Management 2020")
 public class AdminController {
 
@@ -48,7 +48,7 @@ public class AdminController {
 
 	@ApiOperation(value = "회원가입된 유저를 강제로 삭제한다.", response = NumberResult.class)
 	@RequestMapping(value = "/del/{id}", method = RequestMethod.GET)
-	public ResponseEntity<NumberResult> del(@PathVariable("id") String id, Model model) {
+	public ResponseEntity<NumberResult> del(@PathVariable("id") String id) {
 		NumberResult ns = new NumberResult();
 		ns.setName("adminDel");
 		try {

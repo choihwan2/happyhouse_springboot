@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.edu.vue.dto.MemberDto;
+import com.ssafy.edu.vue.help.NumberResult;
 import com.ssafy.edu.vue.service.JwtService;
 import com.ssafy.edu.vue.service.MemberService;
 
@@ -105,63 +106,46 @@ public class MemberController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String logout(HttpSession session) {
-		session.invalidate();
-		return "redirect:/";
-	}
-
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public String delete(Model model, HttpSession session) throws SQLException {
-
-		MemberDto mem = (MemberDto) session.getAttribute("userInfo");
-
-		String id = mem.getId();
-		System.out.println("id -----> " + id);
-
-		try {
-			memberService.deleteMember(id);
-
-			session.invalidate();
-			return "redirect:/";
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("msg", "회원탈퇴 문제가 발생했습니다.");
-			return "error/error";
-		}
-
-	}
-
-	@RequestMapping(value = "/joinForm", method = RequestMethod.GET)
-	public String joinForm(HttpSession session) {
-		return "register";
-	}
-
-	@RequestMapping(value = "/find", method = RequestMethod.GET)
-	public String find(HttpSession session) {
-		return "find";
-	}
-
+	@ApiOperation(value = "유저 정보를 입력하여 가입한다.", response = NumberResult.class)
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
-	private String join(MemberDto memberDto, Model model) throws SQLException {
+	private ResponseEntity<NumberResult> join(@RequestBody MemberDto memberDto) throws SQLException {
+		NumberResult ns = new NumberResult();
 		try {
 			memberDto.setIsAdmin(0);
-
 			memberService.regiMember(memberDto);
-
-			System.out.println("------ [member] ------");
+			ns.setCount(1);
+			ns.setState("succ");
 			System.out.println(memberDto);
-
-			return "redirect:/";
 		} catch (Exception e) {
 			e.printStackTrace();
-			model.addAttribute("msg", "회원가입 문제가 발생했습니다.");
-			return "error/error";
+			return new ResponseEntity<NumberResult>(HttpStatus.BAD_REQUEST);
 		}
+		return new ResponseEntity<NumberResult>(ns, HttpStatus.OK);
 
 	}
 
+	@ApiOperation(value = "유저 정보 토큰을 가지고 회원 탈퇴를 진행한다.", response = NumberResult.class)
+	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	public ResponseEntity<NumberResult> delete(HttpServletRequest req) throws SQLException {
+		Map<String, Object> resultMap = new HashMap<>();
+		String id = "";
+		NumberResult ns = new NumberResult();
+
+		try {
+			resultMap.putAll(jwtService.get(req.getHeader("auth-token")));
+			id = (String) resultMap.get("id");
+			memberService.deleteMember(id);
+			ns.setName("memebrDelete");
+			ns.setCount(1);
+			ns.setState("succ");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<NumberResult>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<NumberResult>(ns,HttpStatus.OK);
+	}
+	
+	
 	@RequestMapping(value = "/modify", method = RequestMethod.POST)
 	private String modify(MemberDto memberDto, Model model, HttpSession session) throws SQLException {
 
