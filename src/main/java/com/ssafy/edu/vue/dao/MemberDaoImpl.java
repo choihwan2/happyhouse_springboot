@@ -23,17 +23,14 @@ public class MemberDaoImpl {
 
 	public void regiMember(MemberDto member) throws SQLException {
 		sqlSession.insert(ns + "regiMember", member);
-		sqlSession.commit();
 	}
 
 	public void modifyMember(MemberDto member) throws SQLException {
 		sqlSession.update(ns + "modMember", member);
-		sqlSession.commit();
 	}
 
 	public void deleteMember(String id) {
 		sqlSession.delete(ns + "deleteMember", id);
-		sqlSession.commit();
 	}
 
 	public String findPassword(String id) {
