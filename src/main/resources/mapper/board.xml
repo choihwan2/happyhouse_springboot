@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.board">
+
+
+	<select id="getBoardList" resultType="board">
+		SELECT * FROM board order by type desc,date desc;
+	</select>
+
+	<select id="getBoard" parameterType="int" resultType="board">
+		SELECT * FROM board WHERE num = #{num};
+	</select>
+
+	<select id="searchBoard" parameterType="String"
+		resultType="board">
+		SELECT * FROM board WHERE title LIKE concat('%', #{title}, '%') ORDER BY
+		date desc;
+	</select>
+
+	<update id="updateBoard" parameterType="board">
+		UPDATE board SET
+		TITLE=#{title},content=#{content} 
+		WHERE num=#{num} AND pw=#{pw};
+	</update>
+
+	<delete id="deleteBoard" parameterType="board">
+		DELETE FROM board WHERE
+		num=#{num} AND pw = #{pw}
+	</delete>
+
+	<insert id="saveBoard" parameterType="board">
+		INSERT INTO
+		board(title,content,name,type,id)
+		VALUES(#{title},#{content},
+		#{name},#{type},#{id})
+	</insert>
+
+
+</mapper>
