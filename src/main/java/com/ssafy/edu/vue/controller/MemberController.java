@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,15 +87,10 @@ public class MemberController {
 	public ResponseEntity<Map<String, Object>> getInfo(HttpServletRequest req) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;
-		System.out.println(">>>>>> " + jwtService.get(req.getHeader("auth-token")));
+//		System.out.println(">>>>>> " + jwtService.get(req.getHeader("auth-token")));
 		try {
 			// 사용자에게 전달할 정보이다.
-//			String info = memberService.getServerInfo();
-
 			resultMap.putAll(jwtService.get(req.getHeader("auth-token")));
-//
-//			resultMap.put("status", true);
-//			resultMap.put("info", info);
 			status = HttpStatus.ACCEPTED;
 		} catch (RuntimeException e) {
 			logger.error("정보조회 실패 : {}", e);
@@ -128,12 +124,11 @@ public class MemberController {
 		Map<String, Object> resultMap = new HashMap<>();
 		String id = "";
 		NumberResult ns = new NumberResult();
-
 		try {
 			resultMap.putAll(jwtService.get(req.getHeader("auth-token")));
-			id = (String) resultMap.get("id");
+			id = (String) resultMap.get("user_id");
 			memberService.deleteMember(id);
-			ns.setName("memebrDelete");
+			ns.setName("memberDelete");
 			ns.setCount(1);
 			ns.setState("succ");
 		} catch (Exception e) {
