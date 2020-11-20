@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -146,32 +144,39 @@ public class MemberController {
 	}
 	
 	
+	@ApiOperation(value = "수정할 유저의 정보를 받게되면 그에 맞게 수정하고 새로운 토큰을 반환한다.", response = Map.class)
 	@RequestMapping(value = "/modify", method = RequestMethod.POST)
-	private String modify(MemberDto memberDto, Model model, HttpSession session) throws SQLException {
-
-		MemberDto mem = (MemberDto) session.getAttribute("userInfo");
-
+	public ResponseEntity<Map<String, Object>> modify(@RequestBody MemberDto memberDto) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
 		try {
-			memberDto.setId(mem.getId());
-			memberDto.setIsAdmin(0);
-
 			memberService.modifyMember(memberDto);
 
-			System.out.println("------ [member] ------");
-			System.out.println(memberDto);
+			if (memberDto != null) {
+//				jwt.io에서 확인
+//				로그인 성공했다면 토큰을 생성한다.
+				String token = jwtService.create(memberDto);
+				logger.trace("로그인 토큰정보 : {}", token);
 
-			session.setAttribute("userInfo", memberDto);
-
-			MemberDto userInfoDetail = memberService.getMember(memberDto.getId());
-			session.setAttribute("userInfoDetail", userInfoDetail);
-
-			return "redirect:/user/mypage";
+//				토큰 정보는 response의 헤더로 보내고 나머지는 Map에 담는다.
+//				response.setHeader("auth-token", token);
+				resultMap.put("auth-token", token);
+				resultMap.put("user-id", memberDto.getId());
+				resultMap.put("user-name", memberDto.getName());
+				resultMap.put("user-type", memberDto.getIsAdmin());
+//				resultMap.put("status", true);
+//				resultMap.put("data", loginUser);
+				status = HttpStatus.ACCEPTED;
+			} else {
+				resultMap.put("message", "유저 수정 실패");
+				status = HttpStatus.ACCEPTED;
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("msg", "회원 수정 문제가 발생했습니다.");
-			return "error/error";
+			logger.error("유저 수정 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
 //	@RequestMapping(value = "/boardList", method = RequestMethod.GET)
