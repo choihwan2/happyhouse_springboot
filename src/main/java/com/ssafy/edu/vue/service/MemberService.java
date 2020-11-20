@@ -8,7 +8,7 @@ import com.ssafy.edu.vue.util.PageNavigation;
 
 public interface MemberService {
 
-	public MemberDto login(Map<String, String> map) throws Exception;
+	public MemberDto login(MemberDto dto) throws Exception;
 	String findPassword(String id);			// 비밀번호 찾기
 	void regiMember(MemberDto member) throws Exception;		// 회원 가입
 	void deleteMember(String id) throws Exception;			// 회원 삭제

@@ -19,10 +19,10 @@ public class MemberServiceImpl implements MemberService {
 	private MemberDaoImpl memberDao;
 
 	@Override
-	public MemberDto login(Map<String, String> map) throws Exception {
-		if (map.get("id") == null || map.get("pw") == null)
+	public MemberDto login(MemberDto dto) throws Exception {
+		if (dto == null)
 			return null;
-		return memberDao.login(map);
+		return memberDao.login(dto);
 	}
 
 	@Override

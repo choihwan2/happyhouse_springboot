@@ -4,9 +4,8 @@
 
 <mapper namespace="com.ssafy.memberdao">
 
-	<select id="login" parameterType="map" resultType="member">
-		select name,
-		id, email
+	<select id="login" parameterType="member" resultType="member">
+		select *
 		from member
 		where id = #{id} and pw = #{pw}
 	</select>

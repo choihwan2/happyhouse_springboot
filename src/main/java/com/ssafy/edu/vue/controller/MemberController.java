@@ -1,161 +1,195 @@
 package com.ssafy.edu.vue.controller;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.edu.vue.dto.MemberDto;
+import com.ssafy.edu.vue.service.JwtService;
 import com.ssafy.edu.vue.service.MemberService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
-@CrossOrigin(origins = {"*"}, maxAge = 6000)
+@CrossOrigin(origins = { "*" }, maxAge = 6000)
 @RestController
-@RequestMapping("/api")
-@Api(value="HappyHouse", description="HappyHouse Resouces Management 2020")
+@RequestMapping("/api/member")
+@Api(value = "HappyHouse", description = "HappyHouse Resouces Management 2020")
 public class MemberController {
-	
+
+	@Autowired
+	private JwtService jwtService;
+
 	@Autowired
 	private MemberService memberService;
-	
+
+	public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
+
 //	@Autowired
 //	private PostService postService;
-	
+
 	/*
 	 * 수정이 필요한 페이지
 	 */
-	
+
+	@ApiOperation(value = "로그인을 시도해보고 그에 맞는 토큰을 Map형태로 받아온다", response = Map.class)
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String login(@RequestParam Map<String, String> map, Model model, HttpSession session, HttpServletResponse response) {
+	public ResponseEntity<Map<String, Object>> login(@RequestBody MemberDto memberDto) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
 		try {
-			MemberDto memberDto = memberService.login(map);
-			if(memberDto != null) {
-				session.setAttribute("userInfo", memberDto);
-				
-				System.out.println("id ---------> " + memberDto.getId());
-				
-				MemberDto userInfoDetail = memberService.getMember(memberDto.getId());
-				session.setAttribute("userInfoDetail", userInfoDetail);
-				
-				if (memberDto.getIsAdmin() == 1) {
-					return "redirect:/admin";
-				}
-				return "redirect:/";
+			MemberDto loginUser = memberService.login(memberDto);
+
+			if (loginUser != null) {
+//				jwt.io에서 확인
+//				로그인 성공했다면 토큰을 생성한다.
+				String token = jwtService.create(loginUser);
+				logger.trace("로그인 토큰정보 : {}", token);
+
+//				토큰 정보는 response의 헤더로 보내고 나머지는 Map에 담는다.
+//				response.setHeader("auth-token", token);
+				resultMap.put("auth-token", token);
+				resultMap.put("user-id", loginUser.getId());
+				resultMap.put("user-name", loginUser.getName());
+				resultMap.put("user-type", loginUser.getIsAdmin());
+//				resultMap.put("status", true);
+//				resultMap.put("data", loginUser);
+				status = HttpStatus.ACCEPTED;
 			} else {
-				model.addAttribute("msg", "아이디 또는 비밀번호 확인 후 로그인해 주세요.");
+				resultMap.put("message", "로그인 실패");
+				status = HttpStatus.ACCEPTED;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("msg", "로그인 중 문제가 발생했습니다.");
-			return "error/error";
+			logger.error("로그인 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		return "redirect:/";
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
-	
-	
+
+	@ApiOperation(value = "유저 정보를 Map형태로 받아온다", response = Map.class)
+	@RequestMapping(value = "/info", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> getInfo(HttpServletRequest req) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = HttpStatus.ACCEPTED;
+		System.out.println(">>>>>> " + jwtService.get(req.getHeader("auth-token")));
+		try {
+			// 사용자에게 전달할 정보이다.
+//			String info = memberService.getServerInfo();
+
+			resultMap.putAll(jwtService.get(req.getHeader("auth-token")));
+//
+//			resultMap.put("status", true);
+//			resultMap.put("info", info);
+			status = HttpStatus.ACCEPTED;
+		} catch (RuntimeException e) {
+			logger.error("정보조회 실패 : {}", e);
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout(HttpSession session) {
 		session.invalidate();
 		return "redirect:/";
 	}
-	
+
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public String delete(Model model, HttpSession session) throws SQLException  {
-		
+	public String delete(Model model, HttpSession session) throws SQLException {
+
 		MemberDto mem = (MemberDto) session.getAttribute("userInfo");
-		
+
 		String id = mem.getId();
 		System.out.println("id -----> " + id);
-		
+
 		try {
 			memberService.deleteMember(id);
-			
+
 			session.invalidate();
 			return "redirect:/";
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("msg", "회원탈퇴 문제가 발생했습니다.");
 			return "error/error";
 		}
-		
+
 	}
-	
+
 	@RequestMapping(value = "/joinForm", method = RequestMethod.GET)
 	public String joinForm(HttpSession session) {
 		return "register";
 	}
-	
+
 	@RequestMapping(value = "/find", method = RequestMethod.GET)
 	public String find(HttpSession session) {
 		return "find";
 	}
-	
-	@RequestMapping(value = "/mypage", method = RequestMethod.GET)
-	public String mypage(HttpSession session) {
-		return "mypage";
-	}
-	
+
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
-	private String join(MemberDto memberDto, Model model) throws SQLException  {
+	private String join(MemberDto memberDto, Model model) throws SQLException {
 		try {
 			memberDto.setIsAdmin(0);
-			
+
 			memberService.regiMember(memberDto);
-			
+
 			System.out.println("------ [member] ------");
 			System.out.println(memberDto);
-			
+
 			return "redirect:/";
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("msg", "회원가입 문제가 발생했습니다.");
 			return "error/error";
 		}
-		
+
 	}
-       
-	
+
 	@RequestMapping(value = "/modify", method = RequestMethod.POST)
-	private String modify(MemberDto memberDto, Model model, HttpSession session) throws SQLException  {
-		
+	private String modify(MemberDto memberDto, Model model, HttpSession session) throws SQLException {
+
 		MemberDto mem = (MemberDto) session.getAttribute("userInfo");
-		
+
 		try {
 			memberDto.setId(mem.getId());
 			memberDto.setIsAdmin(0);
-			
+
 			memberService.modifyMember(memberDto);
-			
+
 			System.out.println("------ [member] ------");
 			System.out.println(memberDto);
-			
-			
+
 			session.setAttribute("userInfo", memberDto);
-			
-			
+
 			MemberDto userInfoDetail = memberService.getMember(memberDto.getId());
 			session.setAttribute("userInfoDetail", userInfoDetail);
-			
+
 			return "redirect:/user/mypage";
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("msg", "회원 수정 문제가 발생했습니다.");
 			return "error/error";
 		}
-		
+
 	}
-	
+
 //	@RequestMapping(value = "/boardList", method = RequestMethod.GET)
 //	public String boardList(@RequestParam Map<String, String> map, Model model) {
 //		String spp = map.get("spp");
@@ -173,8 +207,7 @@ public class MemberController {
 //			return "error/error";
 //		}
 //	}
-	
-	
+
 //	@RequestMapping(value = "/NewsList", method = RequestMethod.GET)
 //	public String NewsList(HttpSession session) {
 //		return "newsInfo";

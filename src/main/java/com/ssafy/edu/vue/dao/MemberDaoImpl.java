@@ -17,8 +17,8 @@ public class MemberDaoImpl {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public MemberDto login(Map<String, String> map) throws SQLException {
-		return sqlSession.selectOne(ns + "login", map);
+	public MemberDto login(MemberDto dto) throws SQLException {
+		return sqlSession.selectOne(ns + "login", dto);
 	}
 
 	public void regiMember(MemberDto member) throws SQLException {
