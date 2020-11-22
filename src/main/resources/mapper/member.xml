@@ -20,8 +20,7 @@
 
 	<update id="modMember" parameterType="member">
 		update member
-		set pw =
-		#{pw}, name = #{name}, phoneNum=#{phoneNum}, email=#{email},
+		set pw = #{pw}, name = #{name}, phoneNum=#{phoneNum}, email=#{email},
 		address=#{address}, addressDetail=#{addressDetail}
 		where id = #{id}
 	</update>

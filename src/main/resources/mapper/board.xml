@@ -6,7 +6,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 	<select id="getBoardList" resultType="board">
-		SELECT * FROM board order by type desc,date desc;
+		SELECT num,title,content, date_format(date, '%Y년%m월%d일') date,
+		type, id FROM board order by type desc,date desc;
 	</select>
 
 	<select id="getBoard" parameterType="int" resultType="board">
