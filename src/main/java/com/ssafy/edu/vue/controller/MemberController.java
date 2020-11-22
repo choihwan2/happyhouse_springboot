@@ -40,8 +40,6 @@ public class MemberController {
 
 	public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
-//	@Autowired
-//	private PostService postService;
 
 	/*
 	 * 수정이 필요한 페이지
@@ -54,7 +52,7 @@ public class MemberController {
 		HttpStatus status = null;
 		try {
 			MemberDto loginUser = memberService.login(memberDto);
-
+			System.out.println(loginUser);
 			if (loginUser != null) {
 //				jwt.io에서 확인
 //				로그인 성공했다면 토큰을 생성한다.
@@ -72,7 +70,7 @@ public class MemberController {
 				status = HttpStatus.ACCEPTED;
 			} else {
 				resultMap.put("message", "로그인 실패");
-				status = HttpStatus.ACCEPTED;
+				status = HttpStatus.BAD_REQUEST;
 			}
 		} catch (Exception e) {
 			logger.error("로그인 실패 : {}", e);
@@ -173,43 +171,5 @@ public class MemberController {
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
-
-//	@RequestMapping(value = "/boardList", method = RequestMethod.GET)
-//	public String boardList(@RequestParam Map<String, String> map, Model model) {
-//		String spp = map.get("spp");
-//		map.put("spp", spp != null ? spp : "10");//sizePerPage
-//		try {
-//			List<PostDto> list = postService.listPost(map);
-//			PageNavigation pageNavigation = postService.makePageNavigation(map);
-//			model.addAttribute("postlist", list);
-//			model.addAttribute("navigation", pageNavigation);
-//			return "board";
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			System.out.println(e.toString());
-//			model.addAttribute("msg", "글목록을 얻어오는 중 문제가 발생했습니다.");
-//			return "error/error";
-//		}
-//	}
-
-//	@RequestMapping(value = "/NewsList", method = RequestMethod.GET)
-//	public String NewsList(HttpSession session) {
-//		return "newsInfo";
-//	}
-
-//	@RequestMapping(value = "/delPost/{num}", method = RequestMethod.GET)
-//	public String delPost(@PathVariable("num") int num, Model model) {
-//		
-//		try {
-//			postService.deletePost(num);
-//			
-//			return "redirect:/user/boardList?pg=1&key=&word=";
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			model.addAttribute("msg", "글 삭제 문제가 발생했습니다.");
-//			return "error/error";
-//		}
-//	}
 
 }
