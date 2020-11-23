@@ -5,11 +5,11 @@
 <mapper namespace="com.ssafy.housedealinfo">
 
 	<select id="dongName" parameterType="string" resultType="housedeal">
-		SELECT dong, houseName, jibun,dealAmount,buildYear,floor,area,type FROM housedeal WHERE dong = #{dongName} ORDER BY houseName
+		SELECT no, dong, houseName, jibun,dealAmount,buildYear,floor,area,type FROM housedeal WHERE dong = #{dongName} ORDER BY houseName
 	</select>
 	
 	<select id="houseName" parameterType="string" resultType="housedeal">
-		SELECT dong, jibun,dealAmount,buildYear,floor,area,houseName,type FROM housedeal WHERE houseName LIKE concat('%', #{houseName}, '%') ORDER BY houseName
+		SELECT no, dong, jibun,dealAmount,buildYear,floor,area,houseName,type FROM housedeal WHERE houseName LIKE concat('%', #{houseName}, '%') ORDER BY houseName
 	</select>
 	
 </mapper>
