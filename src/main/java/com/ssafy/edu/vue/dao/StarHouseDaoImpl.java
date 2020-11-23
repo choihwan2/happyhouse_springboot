@@ -1,0 +1,26 @@
+package com.ssafy.edu.vue.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.ssafy.edu.vue.dto.HouseDealInfoDto;
+import com.ssafy.edu.vue.dto.StarHouseDto;
+
+@Repository
+public class StarHouseDaoImpl {
+
+	String ns = "com.ssafy.stardao.";
+	@Autowired
+	private SqlSession sqlSession;
+
+	public void addStarApt(StarHouseDto dto) {
+		sqlSession.insert(ns + "saveStarApt",dto);
+	}
+
+	public List<HouseDealInfoDto> getStarAptList(String id) {
+		return sqlSession.selectList(ns + "getStarApt");
+	}
+}

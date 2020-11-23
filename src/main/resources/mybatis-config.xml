@@ -31,6 +31,7 @@
 		<typeAlias type="com.ssafy.edu.vue.dto.CoronaDto" alias="coronainfo" />
 		<typeAlias type="com.ssafy.edu.vue.dto.SidoGugunCodeDto" alias="sidogun" />
 		<typeAlias type="com.ssafy.edu.vue.dto.BoardDto" alias="board" />
+		<typeAlias type="com.ssafy.edu.vue.dto.StarHouseDto" alias="starapt" />
 	</typeAliases>
 
     <mappers>
@@ -39,5 +40,6 @@
         <mapper resource="mapper/houseinfo.xml"/>
         <mapper resource="mapper/member.xml"/>
         <mapper resource="mapper/board.xml"/>
+        <mapper resource="mapper/star.xml"/>
     </mappers>
 </configuration>

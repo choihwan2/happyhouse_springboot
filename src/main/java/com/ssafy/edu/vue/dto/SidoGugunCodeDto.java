@@ -6,8 +6,7 @@ public class SidoGugunCodeDto {
 	private String sidoName;
 	private String gugunCode;
 	private String gugunName;
-	
-	
+
 	public SidoGugunCodeDto() {
 		// TODO Auto-generated constructor stub
 	}
