@@ -21,8 +21,8 @@ public class StarHouseServiceImpl implements StarHouseService {
 	}
 
 	@Override
-	public List<HouseDealInfoDto> getStarApt(String id) {
-		return dao.getStarAptList(id);
+	public List<HouseDealInfoDto> getStarApt(String userId) {
+		return dao.getStarAptList(userId);
 	}
 
 }

@@ -4,13 +4,20 @@
 
 <mapper namespace="com.ssafy.stardao">
 
-	<select id="getStarApt" parameterType="string" resultType="housedeal">
-		SELECT gugun, name, address, weekdayop, tel, lat, lng, type FROM hospital WHERE gugun_code like concat(#{gugun}, '%')
+	<select id="getStarApt" parameterType="String"
+		resultType="housedeal">
+		SELECT housedeal.no no,dong,
+		houseName, code, dealAmount, buildYear, area,
+		floor, jibun, type
+		FROM housedeal 
+		JOIN starapt
+		ON housedeal.no = starapt.aptNo
+		WHERE starapt.userId = #{userId};
 	</select>
-	
+
 	<insert id="saveStarApt" parameterType="starapt">
 		INSERT INTO
 		starapt(userId,aptNo) VALUES(#{userId},#{aptNo})
 	</insert>
-	
+
 </mapper>

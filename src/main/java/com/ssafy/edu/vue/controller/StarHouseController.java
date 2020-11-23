@@ -46,11 +46,17 @@ public class StarHouseController {
 		return new ResponseEntity<NumberResult>(ns,HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "아이디에 해당하는 관심매물 목록을 가져온", response = List.class)
-	@GetMapping(value = "/id/{id}")
-	public ResponseEntity<List<HouseDealInfoDto>> getDetailName(@PathVariable("id") String id) {
-		
-		return new ResponseEntity<List<HouseDealInfoDto>>(HttpStatus.OK);
+	@ApiOperation(value = "아이디에 해당하는 관심매물 목록을 가져온다", response = List.class)
+	@GetMapping(value = "/id/{userId}")
+	public ResponseEntity<List<HouseDealInfoDto>> getDetailName(@PathVariable("userId") String userId) {
+		List<HouseDealInfoDto> list = null;
+		try {
+			list = service.getStarApt(userId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ResponseEntity<List<HouseDealInfoDto>>(list,HttpStatus.OK);
 	}
 
 }

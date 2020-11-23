@@ -20,7 +20,7 @@ public class StarHouseDaoImpl {
 		sqlSession.insert(ns + "saveStarApt",dto);
 	}
 
-	public List<HouseDealInfoDto> getStarAptList(String id) {
-		return sqlSession.selectList(ns + "getStarApt");
+	public List<HouseDealInfoDto> getStarAptList(String userId) {
+		return sqlSession.selectList(ns + "getStarApt", userId);
 	}
 }
