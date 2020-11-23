@@ -34,9 +34,15 @@ public class StarHouseController {
 	@PostMapping(value = "/add")
 	public ResponseEntity<NumberResult> addStarApt(@RequestBody StarHouseDto apt) {
 		NumberResult ns = null;
+		StarHouseDto tempHouse = null;
 		try {
-			service.addStarApt(apt);
 			ns = new NumberResult();
+			tempHouse = service.getOneStarApt(apt);
+			if(tempHouse != null) {
+				ns.setState("이미 관심목록에 추가되어있는 아파트입니다.");
+				return new ResponseEntity<NumberResult>(ns,HttpStatus.BAD_REQUEST);
+			}
+			service.addStarApt(apt);
 			ns.setName("addStar");
 			ns.setState("succ");
 		} catch (Exception e) {
@@ -58,5 +64,23 @@ public class StarHouseController {
 		}
 		return new ResponseEntity<List<HouseDealInfoDto>>(list,HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "관심 매물을 삭제한다", response = NumberResult.class)
+	@PostMapping(value = "/delete")
+	public ResponseEntity<NumberResult> deleteStarApt(@RequestBody StarHouseDto dto) {
+		NumberResult ns = null;
+		try {
+			service.deleteStarApt(dto);
+			ns = new NumberResult();
+			ns.setName("deleteStarApt");
+			ns.setState("succ");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ResponseEntity<NumberResult>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<NumberResult>(ns,HttpStatus.OK);
+	}
+	
 
 }

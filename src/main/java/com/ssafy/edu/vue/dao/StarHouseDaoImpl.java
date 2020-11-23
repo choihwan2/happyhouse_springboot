@@ -19,8 +19,16 @@ public class StarHouseDaoImpl {
 	public void addStarApt(StarHouseDto dto) {
 		sqlSession.insert(ns + "saveStarApt",dto);
 	}
+	
+	public StarHouseDto getOneStarApt(StarHouseDto dto) {
+		return sqlSession.selectOne(ns + "getOneStarApt", dto);
+	}
 
 	public List<HouseDealInfoDto> getStarAptList(String userId) {
 		return sqlSession.selectList(ns + "getStarApt", userId);
+	}
+	
+	public void deleteStarApt(StarHouseDto dto) {
+		sqlSession.delete(ns + "deleteStarApt",dto);
 	}
 }

@@ -25,4 +25,14 @@ public class StarHouseServiceImpl implements StarHouseService {
 		return dao.getStarAptList(userId);
 	}
 
+	@Override
+	public void deleteStarApt(StarHouseDto dto) throws Exception {
+		dao.deleteStarApt(dto);
+	}
+
+	@Override
+	public StarHouseDto getOneStarApt(StarHouseDto dto) throws Exception {
+		return dao.getOneStarApt(dto);
+	}
+
 }

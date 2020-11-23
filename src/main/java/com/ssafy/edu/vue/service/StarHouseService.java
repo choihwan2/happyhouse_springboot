@@ -9,4 +9,6 @@ public interface StarHouseService {
 	
 	void addStarApt(StarHouseDto dto) throws Exception;
 	List<HouseDealInfoDto> getStarApt(String user) throws Exception;
+	void deleteStarApt(StarHouseDto dto) throws Exception;
+	StarHouseDto getOneStarApt(StarHouseDto dto) throws Exception;
 }

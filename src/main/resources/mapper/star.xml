@@ -14,10 +14,19 @@
 		ON housedeal.no = starapt.aptNo
 		WHERE starapt.userId = #{userId};
 	</select>
+	
+	<select id="getOneStarApt" resultType="starapt" parameterType="starapt">
+		SELECT * from starapt where userId = #{userId} AND aptNo = #{aptNo}
+	</select>
 
 	<insert id="saveStarApt" parameterType="starapt">
 		INSERT INTO
 		starapt(userId,aptNo) VALUES(#{userId},#{aptNo})
 	</insert>
+	
+	<delete id="deleteStarApt" parameterType="starapt">
+		DELETE FROM starapt
+		WHERE userId = #{userId} AND aptNo = #{aptNo}
+	</delete>
 
 </mapper>
